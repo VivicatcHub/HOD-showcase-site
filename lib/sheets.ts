@@ -45,9 +45,9 @@ export async function getGames(): Promise<GameItem[]> {
 
     return rows.map((row) => ({
       name: row.name ?? "Jeu sans nom",
-      min_players: Number.parseInt(row.min_players ?? "0", 10) || 0,
-      max_players: Number.parseInt(row.max_players ?? "0", 10) || 0,
-      duration_min: Number.parseInt(row.duration_min ?? "0", 10) || 0,
+      min_players: parseInteger(row.min_players),
+      max_players: parseInteger(row.max_players),
+      duration_min: parseInteger(row.duration_min),
       category: row.category ?? "Autre",
       available: ["true", "vrai", "1", "oui"].includes((row.available ?? "").toLowerCase()),
     }));
@@ -62,4 +62,9 @@ function normalizeType(value?: string): EventType {
   if (type.includes("tournoi")) return "tournament";
   if (type.includes("soir") || type.includes("game")) return "game night";
   return "other";
+}
+
+function parseInteger(value?: string): number {
+  const parsed = Number.parseInt(value ?? "0", 10);
+  return Number.isNaN(parsed) ? 0 : parsed;
 }

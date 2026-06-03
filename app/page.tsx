@@ -58,8 +58,8 @@ export default async function Home() {
           </p>
         ) : (
           <div className="grid gap-3 md:grid-cols-3">
-            {upcoming.map((event) => (
-              <article key={`${event.title}-${event.date}`} className="rounded-xl border border-[#534AB7]/50 bg-[#1A1730] p-4">
+            {upcoming.map((event, index) => (
+              <article key={`${event.title}-${event.date}-${index}`} className="rounded-xl border border-[#534AB7]/50 bg-[#1A1730] p-4">
                 <p className="text-xs text-[#9E9BB8]">{new Date(event.date).toLocaleDateString("fr-FR")}</p>
                 <h3 className="mt-2 font-semibold">{event.title}</h3>
                 <p className="mt-1 text-sm text-[#9E9BB8]">{event.location}</p>

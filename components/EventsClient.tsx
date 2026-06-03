@@ -29,7 +29,11 @@ export function EventsClient({ events }: { events: EventItem[] }) {
         ))}
       </div>
       <div className="grid gap-4">
-        {filtered.length === 0 ? <p className="text-[#9E9BB8]">Aucun événement trouvé.</p> : filtered.map((event) => <EventCard key={`${event.title}-${event.date}`} event={event} />)}
+        {filtered.length === 0 ? (
+          <p className="text-[#9E9BB8]">Aucun événement trouvé.</p>
+        ) : (
+          filtered.map((event, index) => <EventCard key={`${event.title}-${event.date}-${index}`} event={event} />)
+        )}
       </div>
     </div>
   );
