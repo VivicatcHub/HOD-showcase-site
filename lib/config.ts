@@ -1,7 +1,7 @@
 export const HOD_CONFIG = {
   sheetId: "VOTRE_SHEET_ID",
   eventsSheetName: "events",
-  gamesSheetName: "ludobible",
+  gamesSheetName: "ludotheque",
   discordUrl: "https://discord.gg/votre-serveur",
   registrationFormUrl: "https://forms.gle/votre-formulaire",
   contactEmail: "contact@hod-association.fr",

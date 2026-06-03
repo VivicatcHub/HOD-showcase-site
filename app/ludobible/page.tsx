@@ -8,7 +8,7 @@ export default async function LudobiblePage() {
     <section className="space-y-6 pb-12">
       <div>
         <h1 className="text-3xl font-bold">Ludothèque</h1>
-        <p className="mt-2 text-[#9E9BB8]">Explorez notre ludobible et trouvez le jeu idéal pour votre table.</p>
+        <p className="mt-2 text-[#9E9BB8]">Explorez notre ludothèque et trouvez le jeu idéal pour votre table.</p>
       </div>
       <GamesClient games={games} />
     </section>
