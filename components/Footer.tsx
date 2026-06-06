@@ -10,7 +10,15 @@ export function Footer() {
           <Link href="/contact" className="hover:text-[#F0EEF8]">
             Rejoindre l&apos;association
           </Link>
-          <a href={HOD_CONFIG.discordUrl} target="_blank" rel="noreferrer" className="hover:text-[#F0EEF8]">
+          <Link href="/statuts" className="hover:text-[#F0EEF8]">
+            Statuts
+          </Link>
+          <a
+            href={HOD_CONFIG.discordUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="hover:text-[#F0EEF8]"
+          >
             Discord
           </a>
         </div>

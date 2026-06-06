@@ -5,7 +5,10 @@ export default function EventsLoading() {
       <div className="h-4 w-80 animate-pulse rounded bg-[#1A1730]" />
       <div className="grid gap-4">
         {Array.from({ length: 3 }).map((_, index) => (
-          <div key={index} className="h-28 animate-pulse rounded-xl bg-[#1A1730]" />
+          <div
+            key={index}
+            className="h-28 animate-pulse rounded-xl bg-[#1A1730]"
+          />
         ))}
       </div>
     </section>

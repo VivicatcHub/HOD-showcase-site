@@ -1,11 +1,18 @@
 export const HOD_CONFIG = {
-  sheetId: "VOTRE_SHEET_ID",
-  eventsSheetName: "events",
-  gamesSheetName: "ludotheque",
-  discordUrl: "https://discord.gg/votre-serveur",
-  registrationFormUrl: "https://forms.gle/votre-formulaire",
-  contactEmail: "contact@hod-association.fr",
+  sheetId: "1y3zDYIZ5gihhiTcooscsQuXqsN9qNJGNYLva7NJ_KvU",
+  gamesSheetName: "2026",
+  // Member investment / XP tracking lives in a separate spreadsheet.
+  xpSheetId: "1O79n_yug6bVrpj_rlqX1B7mHOvmbxO6G17QcfiO2JvQ",
+  xpSheetName: "2025-2026-2",
+  eventsCalendarId:
+    "a70b821d6efc8c128f416db27264ef4824158b5165389e92b8c7e7e0add5d912@group.calendar.google.com",
+  discordUrl: "https://discord.gg/sXksSNqttB",
+  registrationFormUrl: "https://forms.gle/UAZvzUJWnGvZY3FJA",
+  contactEmail: "heavenofdice@gmail.com",
 };
 
-export const getSheetCsvUrl = (sheetName: string) =>
-  `https://docs.google.com/spreadsheets/d/${HOD_CONFIG.sheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}`;
+export const getSheetCsvUrl = (
+  sheetName: string,
+  sheetId: string = HOD_CONFIG.sheetId,
+) =>
+  `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}`;

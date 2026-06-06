@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="340" height="340" viewBox="0 0 340 340">
+  <defs>
+    <filter id="neon" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2.4" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+  <g filter="url(#neon)"
+     font-family="'Segoe UI Symbol','Noto Sans Symbols2','Noto Sans Symbols','Apple Symbols',sans-serif">
+    <text x="40" y="85" font-size="56" fill="#AEA9EC" transform="rotate(-12 40 85)">&#x2684;</text>
+    <text x="240" y="70" font-size="42" fill="#F3B562" transform="rotate(10 240 70)">&#x2660;</text>
+    <text x="150" y="195" font-size="60" fill="#7C6FE0" transform="rotate(7 150 195)">&#x265E;</text>
+    <text x="55" y="265" font-size="40" fill="#F3B562" transform="rotate(-8 55 265)">&#x2665;</text>
+    <text x="255" y="250" font-size="52" fill="#AEA9EC" transform="rotate(14 255 250)">&#x2685;</text>
+    <text x="300" y="160" font-size="36" fill="#7C6FE0" transform="rotate(-10 300 160)">&#x265B;</text>
+    <text x="135" y="55" font-size="30" fill="#AEA9EC" transform="rotate(6 135 55)">&#x2666;</text>
+    <text x="20" y="170" font-size="30" fill="#F3B562" transform="rotate(-6 20 170)">&#x2663;</text>
+  </g>
+</svg>

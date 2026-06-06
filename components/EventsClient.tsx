@@ -2,39 +2,88 @@
 
 import { useMemo, useState } from "react";
 import { EventCard } from "@/components/EventCard";
-import type { EventItem } from "@/lib/sheets";
+import { EventCalendar } from "@/components/EventCalendar";
+import type { EventItem } from "@/lib/events";
 
-const filters = ["all", "game night", "tournament", "other"] as const;
+const filters = [
+  "all",
+  "game day",
+  "game night",
+  "tournament",
+  "other",
+] as const;
 
-export function EventsClient({ events }: { events: EventItem[] }) {
+type View = "list" | "agenda";
+
+export function EventsClient({
+  events,
+  agendaEvents,
+}: {
+  events: EventItem[];
+  agendaEvents: EventItem[];
+}) {
   const [filter, setFilter] = useState<(typeof filters)[number]>("all");
+  const [view, setView] = useState<View>("list");
 
-  const filtered = useMemo(
-    () => (filter === "all" ? events : events.filter((event) => event.type === filter)),
-    [events, filter],
-  );
+  const filtered = useMemo(() => {
+    const source = view === "list" ? events : agendaEvents;
+    return filter === "all"
+      ? source
+      : source.filter((event) => event.type === filter);
+  }, [events, agendaEvents, view, filter]);
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap gap-2">
-        {filters.map((value) => (
-          <button
-            key={value}
-            type="button"
-            onClick={() => setFilter(value)}
-            className={`rounded-full px-3 py-1 text-sm ${filter === value ? "bg-[#534AB7] text-[#F0EEF8]" : "bg-[#1A1730] text-[#9E9BB8]"}`}
-          >
-            {value === "all" ? "Tous" : value === "game night" ? "Soirée jeux" : value === "tournament" ? "Tournois" : "Autres"}
-          </button>
-        ))}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap gap-2">
+          {filters.map((value) => (
+            <button
+              key={value}
+              type="button"
+              onClick={() => setFilter(value)}
+              className={`rounded-full px-3 py-1 text-sm ${filter === value ? "bg-[#534AB7] text-[#F0EEF8]" : "bg-[#1A1730] text-[#9E9BB8]"}`}
+            >
+              {value === "all"
+                ? "Tous"
+                : value === "game night"
+                  ? "Soirée jeux"
+                  : value == "game day"
+                    ? "Journée jeux"
+                    : value === "tournament"
+                      ? "Tournois"
+                      : "Autres"}
+            </button>
+          ))}
+        </div>
+        <div className="flex gap-1 rounded-full bg-[#1A1730] p-1">
+          {(["list", "agenda"] as const).map((value) => (
+            <button
+              key={value}
+              type="button"
+              onClick={() => setView(value)}
+              className={`rounded-full px-3 py-1 text-sm transition ${view === value ? "bg-[#534AB7] text-[#F0EEF8]" : "text-[#9E9BB8] hover:text-[#F0EEF8]"}`}
+            >
+              {value === "list" ? "Liste" : "Agenda"}
+            </button>
+          ))}
+        </div>
       </div>
-      <div className="grid gap-4">
-        {filtered.length === 0 ? (
-          <p className="text-[#9E9BB8]">Aucun événement trouvé.</p>
-        ) : (
-          filtered.map((event, index) => <EventCard key={`${event.title}-${event.date}-${index}`} event={event} />)
-        )}
-      </div>
+      {view === "list" ? (
+        <div className="grid gap-4 md:grid-cols-2">
+          {filtered.length === 0 ? (
+            <p className="text-[#9E9BB8]">Aucun événement trouvé.</p>
+          ) : (
+            filtered.map((event, index) => (
+              <EventCard
+                key={`${event.title}-${event.date}-${index}`}
+                event={event}
+              />
+            ))
+          )}
+        </div>
+      ) : (
+        <EventCalendar events={filtered} />
+      )}
     </div>
   );
 }

@@ -4,14 +4,20 @@ export type Member = {
 };
 
 export const bureauMembers: Member[] = [
-  { name: "Camille Durand", role: "Présidente" },
-  { name: "Noah Lefèvre", role: "Vice-président" },
-  { name: "Sarah Morel", role: "Trésorière" },
-  { name: "Lucas Martin", role: "Secrétaire" },
+  { name: "DE MUIZON Ferréol", role: "Président" },
+  { name: "GUINET Valentin", role: "Chancelier (Co-Président)" },
+  { name: "KWIHANGANA Clément", role: "Trésorièr" },
+  { name: "BERLET Alexis", role: "Secrétaire" },
+  { name: "LEGRAND Yasmina", role: "Responsable de Communication" },
 ];
 
 export const caMembers: Member[] = [
-  { name: "Emma Bernard", role: "Administratrice" },
-  { name: "Hugo Petit", role: "Administrateur" },
-  { name: "Jade Laurent", role: "Administratrice" },
+  { name: "LAFOLIE Evan", role: "Suppléant du Bureau" },
+  {
+    name: "CORDAT-BOURSIAC Hector",
+    role: "Capitaine du Pôle TCG (Trading Card Game)",
+  },
+  { name: "NGUYEN Charles", role: "Capitaine du Pôle Jeux de Trahisons" },
+  { name: "JOUDI Omar", role: "Capitaine du Pôle Jeux de Réflexions" },
+  { name: "LEROY Léonard", role: "Capitaine du Pôle Jeux de Sociétés" },
 ];

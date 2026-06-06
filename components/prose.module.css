@@ -1,0 +1,150 @@
+/* Sober document styling shared by the legal pages (statuts) and the
+   C.A. / A.G. reports — a readable article look rather than the old cards. */
+
+/* h1 — top-level heading : largest, gold left bar + full underline */
+.document h1 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: #f0eef8;
+  line-height: 1.25;
+  margin-top: 2.75rem;
+  margin-bottom: 1rem;
+  padding: 0.15rem 0 0.5rem 0.85rem;
+  border-left: 4px solid #f3b562;
+  border-bottom: 2px solid rgba(83, 74, 183, 0.5);
+}
+
+/* h2 — section : purple, underlined */
+.document h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #aea9ec;
+  letter-spacing: 0.01em;
+  margin-top: 1.75rem;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid rgba(83, 74, 183, 0.3);
+}
+
+/* h3 — sub-section : gold, with a leading marker */
+.document h3 {
+  font-size: 1.075rem;
+  font-weight: 600;
+  color: #f3b562;
+  margin-top: 1.35rem;
+  margin-bottom: 0.4rem;
+}
+
+.document h3::before {
+  content: "▸ ";
+  color: rgba(243, 181, 98, 0.6);
+}
+
+/* h4 — sub-sub-section : small uppercase muted label */
+.document h4 {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #9e9bb8;
+  margin-top: 1.1rem;
+  margin-bottom: 0.3rem;
+}
+
+.document h1:first-child,
+.document h2:first-child,
+.document h3:first-child,
+.document h4:first-child {
+  margin-top: 0;
+}
+
+.document p {
+  color: #c9c6dd;
+  font-size: 1rem;
+  line-height: 1.8;
+  text-align: justify;
+  margin-bottom: 0.75rem;
+}
+
+.document ol {
+  list-style: decimal;
+  padding-left: 1.5rem;
+  margin: 0.5rem 0 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.document ul {
+  list-style: disc;
+  padding-left: 1.5rem;
+  margin: 0.5rem 0 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.document li {
+  color: #c9c6dd;
+  font-size: 1rem;
+  line-height: 1.7;
+  padding-left: 0.25rem;
+}
+
+.document blockquote {
+  margin: 0.75rem 0;
+  padding: 0.75rem 1rem;
+  border-left: 3px solid #aea9ec;
+  border-radius: 0 0.5rem 0.5rem 0;
+  background-color: rgba(83, 74, 183, 0.12);
+}
+
+.document blockquote p {
+  margin: 0;
+  color: #c9c6dd;
+  text-align: left;
+}
+
+.document table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #1a1730;
+  border: 1px solid rgba(83, 74, 183, 0.5);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  margin: 0.75rem 0;
+}
+
+.document thead {
+  background-color: rgba(83, 74, 183, 0.18);
+}
+
+.document th {
+  padding: 0.6rem 1rem;
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #aea9ec;
+}
+
+.document td {
+  padding: 0.6rem 1rem;
+  color: #c9c6dd;
+  font-size: 0.95rem;
+}
+
+.document tbody tr {
+  border-top: 1px solid rgba(83, 74, 183, 0.25);
+}
+
+.document strong {
+  color: #f0eef8;
+  font-weight: 600;
+}
+
+.document em {
+  color: #9e9bb8;
+}

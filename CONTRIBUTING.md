@@ -2,7 +2,7 @@
 
 ## Ajouter un article du C.A.
 
-1. Créez un fichier `.md` dans `/content/ca/` (exemple : `ca-octobre-2026.md`).
+1. Créez un fichier `.md` dans `/content/ca/` (exemple : `2026-06-08-ca.md`).
 2. Ajoutez le frontmatter suivant :
 
 ```md

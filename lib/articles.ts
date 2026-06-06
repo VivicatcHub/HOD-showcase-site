@@ -2,8 +2,6 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import matter from "gray-matter";
 import { notFound } from "next/navigation";
-import { remark } from "remark";
-import html from "remark-html";
 
 export type ArticleMeta = {
   slug: string;
@@ -41,7 +39,6 @@ export async function getArticleBySlug(slug: string) {
   try {
     const raw = await fs.readFile(path.join(contentPath, `${slug}.md`), "utf8");
     const { data, content } = matter(raw);
-    const processedContent = await remark().use(html).process(content);
 
     return {
       slug,
@@ -49,7 +46,7 @@ export async function getArticleBySlug(slug: string) {
       date: String(data.date ?? "1970-01-01"),
       summary: String(data.summary ?? ""),
       author: String(data.author ?? "Bureau HOD"),
-      contentHtml: processedContent.toString(),
+      contentHtml: content.toString(),
     };
   } catch {
     notFound();
