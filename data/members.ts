@@ -6,7 +6,7 @@ export type Member = {
 export const bureauMembers: Member[] = [
   { name: "DE MUIZON Ferréol", role: "Président" },
   { name: "GUINET Valentin", role: "Chancelier (Co-Président)" },
-  { name: "KWIHANGANA Clément", role: "Trésorièr" },
+  { name: "KWIHANGANA Clément", role: "Trésorier" },
   { name: "BERLET Alexis", role: "Secrétaire" },
   { name: "LEGRAND Yasmina", role: "Responsable de Communication" },
 ];
