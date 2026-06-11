@@ -1,8 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { EventCard } from "@/components/EventCard";
 import { EventCalendar } from "@/components/EventCalendar";
+import { getAgendaEvents, getEvents } from "@/lib/events";
 import type { EventItem } from "@/lib/events";
 
 const filters = [
@@ -15,15 +16,20 @@ const filters = [
 
 type View = "list" | "agenda";
 
-export function EventsClient({
-  events,
-  agendaEvents,
-}: {
-  events: EventItem[];
-  agendaEvents: EventItem[];
-}) {
+export function EventsClient() {
+  const [events, setEvents] = useState<EventItem[]>([]);
+  const [agendaEvents, setAgendaEvents] = useState<EventItem[]>([]);
+  const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<(typeof filters)[number]>("all");
   const [view, setView] = useState<View>("list");
+
+  useEffect(() => {
+    Promise.all([getEvents(), getAgendaEvents()]).then(([ev, agenda]) => {
+      setEvents(ev);
+      setAgendaEvents(agenda);
+      setLoading(false);
+    });
+  }, []);
 
   const filtered = useMemo(() => {
     const source = view === "list" ? events : agendaEvents;
@@ -31,6 +37,19 @@ export function EventsClient({
       ? source
       : source.filter((event) => event.type === filter);
   }, [events, agendaEvents, view, filter]);
+
+  if (loading) {
+    return (
+      <div className="grid gap-4">
+        {Array.from({ length: 3 }).map((_, index) => (
+          <div
+            key={index}
+            className="h-28 animate-pulse rounded-xl bg-[#1A1730]"
+          />
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

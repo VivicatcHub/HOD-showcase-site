@@ -1,13 +1,25 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { GameRow } from "@/components/GameRow";
+import { getGames } from "@/lib/games";
 import type { GameItem } from "@/lib/games";
 
-export function GamesClient({ games }: { games: GameItem[] }) {
+export function GamesClient() {
+  const [games, setGames] = useState<GameItem[]>([]);
+  const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
+  const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("all");
   const [state, setState] = useState("all");
+
+  useEffect(() => {
+    getGames().then(({ games: data, lastUpdate: date }) => {
+      setGames(data);
+      setLastUpdate(date);
+      setLoading(false);
+    });
+  }, []);
 
   const categories = useMemo(
     () => [
@@ -31,8 +43,30 @@ export function GamesClient({ games }: { games: GameItem[] }) {
     });
   }, [games, query, category, state]);
 
+  if (loading) {
+    return (
+      <div className="grid gap-3 md:grid-cols-3">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div key={i} className="h-16 animate-pulse rounded-xl bg-[#1A1730]" />
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4">
+      {lastUpdate && (
+        <div className="flex justify-end">
+          <span className="rounded-full bg-[#3C3489] px-2 py-1 text-xs text-[#AEA9EC]">
+            Dernière mise à jour le{" "}
+            {lastUpdate.toLocaleDateString("fr-FR", {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            })}
+          </span>
+        </div>
+      )}
       <div className="grid gap-3 md:grid-cols-3">
         <input
           type="search"

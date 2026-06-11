@@ -1,16 +1,10 @@
 import Link from "next/link";
 import { MemberCard } from "@/components/MemberCard";
+import { UpcomingEvents } from "@/components/UpcomingEvents";
 import { bureauMembers, caMembers } from "@/data/members";
 import { HOD_CONFIG } from "@/lib/config";
-import { getEvents } from "@/lib/events";
 
-export default async function Home() {
-  const events = await getEvents();
-  const now = new Date();
-  const upcoming = events
-    .filter((event) => new Date(event.date) >= now)
-    .slice(0, 3);
-
+export default function Home() {
   return (
     <div className="space-y-12 pb-12">
       <section className="hero-grain rounded-2xl border border-[#534AB7]/60 bg-[#1A1730] px-6 py-16 text-center">
@@ -89,36 +83,7 @@ export default async function Home() {
             Voir tout
           </Link>
         </div>
-        {upcoming.length === 0 ? (
-          <p className="rounded-xl border border-dashed border-[#534AB7] p-4 text-[#9E9BB8]">
-            Aucun événement à venir pour le moment.
-          </p>
-        ) : (
-          <div className="grid gap-3 md:grid-cols-3">
-            {upcoming.map((event, index) => (
-              <article
-                key={`${event.title}-${event.date}-${index}`}
-                className="rounded-xl border border-[#534AB7]/50 bg-[#1A1730] p-4"
-              >
-                <p className="text-xs text-[#9E9BB8]">
-                  {`Le ${new Date(event.date).toLocaleDateString("fr-FR", {
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric",
-                  })} de ${new Date(event.start).toLocaleTimeString("fr-FR", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })} à ${new Date(event.end).toLocaleTimeString("fr-FR", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}`}
-                </p>
-                <h3 className="mt-2 font-semibold">{event.title}</h3>
-                <p className="mt-1 text-sm text-[#9E9BB8]">{event.location}</p>
-              </article>
-            ))}
-          </div>
-        )}
+        <UpcomingEvents />
       </section>
 
       <section className="rounded-xl border border-[#F3B562]/50 bg-[#1A1730] p-6 text-center">

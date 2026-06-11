@@ -52,7 +52,11 @@ async function loadCalendar(): Promise<ParsedEvent[]> {
       HOD_CONFIG.eventsCalendarId,
     )}/public/basic.ics`;
 
-    const res = await fetch(icalUrl, { next: { revalidate: 300 } });
+    // Google Calendar ICS has no CORS headers — proxy the request through corsproxy.io
+    const res = await fetch(
+      `https://corsproxy.io/?${encodeURIComponent(icalUrl)}`,
+      { cache: "no-store" },
+    );
     if (!res.ok) return [];
 
     const icalText = await res.text();

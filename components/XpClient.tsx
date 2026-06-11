@@ -1,8 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { MemberXpCard } from "@/components/MemberXpCard";
-import { formatMinutes, type MemberXp } from "@/lib/xp";
+import { formatMinutes, getMembersXp } from "@/lib/xp";
+import type { MemberXp } from "@/lib/xp";
 
 type Sort = "hours" | "credits" | "name";
 
@@ -11,9 +12,20 @@ const sorts: { key: Sort; label: string }[] = [
   { key: "name", label: "Nom" },
 ];
 
-export function XpClient({ members }: { members: MemberXp[] }) {
+export function XpClient() {
+  const [members, setMembers] = useState<MemberXp[]>([]);
+  const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
+  const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<Sort>("hours");
+
+  useEffect(() => {
+    getMembersXp().then(({ members: data, lastUpdate: date }) => {
+      setMembers(data);
+      setLastUpdate(date);
+      setLoading(false);
+    });
+  }, []);
 
   const totals = useMemo(() => {
     const minutes = members.reduce((sum, m) => sum + m.totalMinutes, 0);
@@ -45,7 +57,6 @@ export function XpClient({ members }: { members: MemberXp[] }) {
     return sorted;
   }, [members, query, sort]);
 
-  /** Rank by hours regardless of the active sort, so medals stay meaningful. */
   const rankByMember = useMemo(() => {
     const ordered = [...members].sort(
       (a, b) => b.totalMinutes - a.totalMinutes,
@@ -61,8 +72,39 @@ export function XpClient({ members }: { members: MemberXp[] }) {
     { label: "Activités enregistrées", value: String(totals.events) },
   ];
 
+  if (loading) {
+    return (
+      <div className="space-y-3">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="h-20 animate-pulse rounded-xl bg-[#1A1730]" />
+        ))}
+      </div>
+    );
+  }
+
+  if (members.length === 0) {
+    return (
+      <p className="text-[#9E9BB8]">
+        Les données d&apos;investissement ne sont pas disponibles pour le
+        moment.
+      </p>
+    );
+  }
+
   return (
     <div className="space-y-6">
+      {lastUpdate && (
+        <div className="flex justify-end">
+          <span className="rounded-full bg-[#3C3489] px-2 py-1 text-xs text-[#AEA9EC]">
+            Dernière mise à jour le{" "}
+            {lastUpdate.toLocaleDateString("fr-FR", {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            })}
+          </span>
+        </div>
+      )}
       <div className="grid gap-3 sm:grid-cols-3">
         {stats.map((stat) => (
           <div

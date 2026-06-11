@@ -3,7 +3,7 @@ import { getSheetCsvUrl } from "@/lib/config";
 
 export async function fetchSheetRows<T>(sheetName: string): Promise<T[]> {
   const response = await fetch(getSheetCsvUrl(sheetName), {
-    next: { revalidate: 300 },
+    cache: "no-store",
   });
 
   if (!response.ok) {

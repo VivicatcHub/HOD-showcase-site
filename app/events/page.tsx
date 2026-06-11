@@ -1,12 +1,6 @@
 import { EventsClient } from "@/components/EventsClient";
-import { getAgendaEvents, getEvents } from "@/lib/events";
 
-export default async function EventsPage() {
-  const [events, agendaEvents] = await Promise.all([
-    getEvents(),
-    getAgendaEvents(),
-  ]);
-
+export default function EventsPage() {
   return (
     <section className="space-y-6 pb-12">
       <div>
@@ -15,7 +9,7 @@ export default async function EventsPage() {
           Toutes les dates à venir de Heaven of Dice.
         </p>
       </div>
-      <EventsClient events={events} agendaEvents={agendaEvents} />
+      <EventsClient />
     </section>
   );
 }

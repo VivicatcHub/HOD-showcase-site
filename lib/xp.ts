@@ -24,8 +24,6 @@ export type MemberXp = {
   events: XpEventEntry[];
 };
 
-export let XpLastUpdate: Date | null = null;
-
 /** Parse a "DD/MM/YYYY" date as written in the sheet. */
 function parseFrDate(value: string): Date | null {
   const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec((value ?? "").trim());
@@ -60,13 +58,16 @@ function toMinutes(value: string): number {
   return Number.isFinite(n) ? Math.round(n * 60) : 0;
 }
 
-export async function getMembersXp(): Promise<MemberXp[]> {
+export async function getMembersXp(): Promise<{
+  members: MemberXp[];
+  lastUpdate: Date | null;
+}> {
   try {
     const res = await fetch(
       getSheetCsvUrl(HOD_CONFIG.xpSheetName, HOD_CONFIG.xpSheetId),
-      { next: { revalidate: 300 } },
+      { cache: "no-store" },
     );
-    if (!res.ok) return [];
+    if (!res.ok) return { members: [], lastUpdate: null };
 
     const csv = await res.text();
     const rows = Papa.parse<string[]>(csv, { skipEmptyLines: false }).data;
@@ -75,7 +76,7 @@ export async function getMembersXp(): Promise<MemberXp[]> {
     const headerIndex = rows.findIndex((row) =>
       row.some((cell) => normalize(cell) === "NOM"),
     );
-    if (headerIndex === -1) return [];
+    if (headerIndex === -1) return { members: [], lastUpdate: null };
 
     const header = rows[headerIndex].map(normalize);
     const find = (predicate: (h: string) => boolean) =>
@@ -99,6 +100,7 @@ export async function getMembersXp(): Promise<MemberXp[]> {
     const cell = (row: string[], index: number) =>
       index >= 0 ? (row[index] ?? "").trim() : "";
 
+    let lastUpdate: Date | null = null;
     const members: MemberXp[] = [];
     let current: MemberXp | null = null;
 
@@ -108,7 +110,7 @@ export async function getMembersXp(): Promise<MemberXp[]> {
       // A filled last name starts a new member; that first row is its TOTAL row.
       if (last) {
         const maj = parseFrDate(cell(row, cols.maj));
-        if (maj && (!XpLastUpdate || maj > XpLastUpdate)) XpLastUpdate = maj;
+        if (maj && (!lastUpdate || maj > lastUpdate)) lastUpdate = maj;
         current = {
           lastName: last,
           firstName: cell(row, cols.first),
@@ -137,10 +139,13 @@ export async function getMembersXp(): Promise<MemberXp[]> {
       });
     }
 
-    return members
-      .sort((a, b) => b.totalMinutes - a.totalMinutes)
-      .filter((event) => event.lastName != "EXEMPLE");
+    return {
+      members: members
+        .sort((a, b) => b.totalMinutes - a.totalMinutes)
+        .filter((event) => event.lastName != "EXEMPLE"),
+      lastUpdate,
+    };
   } catch {
-    return [];
+    return { members: [], lastUpdate: null };
   }
 }

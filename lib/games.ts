@@ -16,32 +16,29 @@ export type GameItem = {
   notes: string;
 };
 
-export let GamesLastUpdate = new Date("01/01/2000");
-
-export async function getGames(): Promise<GameItem[]> {
+export async function getGames(): Promise<{
+  games: GameItem[];
+  lastUpdate: Date | null;
+}> {
   try {
     const rows = await fetchSheetRows<Record<string, string>>(
       HOD_CONFIG.gamesSheetName,
     );
 
-    if (rows[0].MAJ) {
-      GamesLastUpdate = new Date(rows[0].MAJ);
+    let lastUpdate: Date | null = null;
+    if (rows[0]?.MAJ) {
+      lastUpdate = new Date(rows[0].MAJ);
     }
 
-    return rows.map((row) => {
-      const name = (row.Nom ?? "Jeu sans nom") as string;
-      const etat = (row.Etat as StateType) ?? "Inconnu";
-      const appartenance = (row.Appartenance ?? "HOD") as string;
-      const notes = (row.Notes ?? "") as string;
+    const games = rows.map((row) => ({
+      name: (row.Nom ?? "Jeu sans nom") as string,
+      state: (row.Etat as StateType) ?? "Inconnu",
+      category: (row.Appartenance ?? "HOD") as string,
+      notes: (row.Notes ?? "") as string,
+    }));
 
-      return {
-        name: name,
-        state: etat,
-        category: appartenance,
-        notes: notes,
-      };
-    });
+    return { games, lastUpdate };
   } catch {
-    return [];
+    return { games: [], lastUpdate: null };
   }
 }

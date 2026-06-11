@@ -4,6 +4,7 @@ export const HOD_CONFIG = {
   // Member investment / XP tracking lives in a separate spreadsheet.
   xpSheetId: "1O79n_yug6bVrpj_rlqX1B7mHOvmbxO6G17QcfiO2JvQ",
   xpSheetName: "2025-2026-2",
+  // https://calendar.google.com/calendar/embed?src=a70b821d6efc8c128f416db27264ef4824158b5165389e92b8c7e7e0add5d912%40group.calendar.google.com&ctz=Europe%2FParis
   eventsCalendarId:
     "a70b821d6efc8c128f416db27264ef4824158b5165389e92b8c7e7e0add5d912@group.calendar.google.com",
   discordUrl: "https://discord.gg/sXksSNqttB",
