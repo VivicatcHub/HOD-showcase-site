@@ -2,8 +2,9 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { MemberXpCard } from "@/components/MemberXpCard";
-import { formatMinutes, getMembersXp } from "@/lib/xp";
+import { formatXP, getMembersXp } from "@/lib/xp";
 import type { MemberXp } from "@/lib/xp";
+import { HOD_CONFIG } from "@/lib/config";
 
 type Sort = "hours" | "credits" | "name";
 
@@ -12,7 +13,11 @@ const sorts: { key: Sort; label: string }[] = [
   { key: "name", label: "Nom" },
 ];
 
+const currentSheetName =
+  HOD_CONFIG.xpSheetNames[HOD_CONFIG.xpSheetNames.length - 1];
+
 export function XpClient() {
+  const [sheetName, setSheetName] = useState(currentSheetName);
   const [members, setMembers] = useState<MemberXp[]>([]);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
   const [loading, setLoading] = useState(true);
@@ -20,12 +25,13 @@ export function XpClient() {
   const [sort, setSort] = useState<Sort>("hours");
 
   useEffect(() => {
-    getMembersXp().then(({ members: data, lastUpdate: date }) => {
+    setLoading(true);
+    getMembersXp(sheetName).then(({ members: data, lastUpdate: date }) => {
       setMembers(data);
       setLastUpdate(date);
       setLoading(false);
     });
-  }, []);
+  }, [sheetName]);
 
   const totals = useMemo(() => {
     const minutes = members.reduce((sum, m) => sum + m.totalMinutes, 0);
@@ -68,7 +74,7 @@ export function XpClient() {
 
   const stats = [
     { label: "Membres", value: String(members.length) },
-    { label: "Heures cumulées", value: formatMinutes(totals.minutes) },
+    { label: "XP cumulées", value: formatXP(totals.minutes) },
     { label: "Activités enregistrées", value: String(totals.events) },
   ];
 
@@ -82,19 +88,37 @@ export function XpClient() {
     );
   }
 
+  const sheetSelect = HOD_CONFIG.xpSheetNames.length > 1 && (
+    <select
+      value={sheetName}
+      onChange={(event) => setSheetName(event.target.value)}
+      className="rounded-lg border border-[#534AB7] bg-[#1A1730] px-2 py-1 text-xs text-[#AEA9EC]"
+    >
+      {[...HOD_CONFIG.xpSheetNames].reverse().map((name) => (
+        <option key={name} value={name}>
+          {name}
+        </option>
+      ))}
+    </select>
+  );
+
   if (members.length === 0) {
     return (
-      <p className="text-[#9E9BB8]">
-        Les données d&apos;investissement ne sont pas disponibles pour le
-        moment.
-      </p>
+      <div className="space-y-3">
+        <div className="flex justify-end">{sheetSelect}</div>
+        <p className="text-[#9E9BB8]">
+          Les données d&apos;investissement ne sont pas disponibles pour le
+          moment.
+        </p>
+      </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      {lastUpdate && (
-        <div className="flex justify-end">
+      <div className="flex flex-wrap items-center justify-end gap-3">
+        {sheetSelect}
+        {lastUpdate && (
           <span className="rounded-full bg-[#3C3489] px-2 py-1 text-xs text-[#AEA9EC]">
             Dernière mise à jour le{" "}
             {lastUpdate.toLocaleDateString("fr-FR", {
@@ -103,8 +127,8 @@ export function XpClient() {
               year: "numeric",
             })}
           </span>
-        </div>
-      )}
+        )}
+      </div>
       <div className="grid gap-3 sm:grid-cols-3">
         {stats.map((stat) => (
           <div

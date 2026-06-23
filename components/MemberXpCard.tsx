@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { formatMinutes, type MemberXp } from "@/lib/xp";
+import { formatMinutes, formatXP, type MemberXp } from "@/lib/xp";
 
 const categories = [
   { key: "event", label: "Évènements", color: "#F3B562" },
@@ -67,7 +67,7 @@ export function MemberXpCard({
         </div>
         <div className="shrink-0 text-right">
           <p className="text-lg font-bold text-[#F3B562]">
-            {formatMinutes(member.totalMinutes)}
+            {formatXP(member.totalMinutes)}
           </p>
           <p className="text-xs text-[#9E9BB8]">
             {member.credits} crédit{member.credits > 1 ? "s" : ""}

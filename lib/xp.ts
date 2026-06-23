@@ -39,6 +39,15 @@ export function formatMinutes(minutes: number): string {
   return rest ? `${hours}h${String(rest).padStart(2, "0")}` : `${hours}h`;
 }
 
+export function formatXP(minutes: number): string {
+  const hours = Math.floor(minutes / 60);
+  const rest = minutes % 60;
+  if (!minutes) return "0 xp";
+  return rest
+    ? `${hours}.${String(rest / 0.6 - (rest % 0.6))} xp`
+    : `${hours} xp`;
+}
+
 /** Strip accents + uppercase so header matching is resilient to wording. */
 function normalize(value: string): string {
   return (value ?? "")
@@ -58,15 +67,18 @@ function toMinutes(value: string): number {
   return Number.isFinite(n) ? Math.round(n * 60) : 0;
 }
 
-export async function getMembersXp(): Promise<{
+export async function getMembersXp(
+  sheetName: string = HOD_CONFIG.xpSheetNames[
+    HOD_CONFIG.xpSheetNames.length - 1
+  ],
+): Promise<{
   members: MemberXp[];
   lastUpdate: Date | null;
 }> {
   try {
-    const res = await fetch(
-      getSheetCsvUrl(HOD_CONFIG.xpSheetName, HOD_CONFIG.xpSheetId),
-      { cache: "no-store" },
-    );
+    const res = await fetch(getSheetCsvUrl(sheetName, HOD_CONFIG.xpSheetId), {
+      cache: "no-store",
+    });
     if (!res.ok) return { members: [], lastUpdate: null };
 
     const csv = await res.text();
@@ -87,9 +99,7 @@ export async function getMembersXp(): Promise<{
       first: find((h) => h === "PRENOM"),
       role: find((h) => h === "ROLE"),
       credits: find((h) => h.includes("CREDIT")),
-      total: find(
-        (h) => h.includes("INVESTISSEMENT") || h.includes("CONFONDU"),
-      ),
+      total: find((h) => h.includes("XP")),
       eventName: find((h) => h.includes("NOM DE L") && h.includes("EVENEMENT")),
       eventTime: find((h) => h.includes("TEMPS PASSE SUR")),
       prepTime: find((h) => h.includes("ORGANISATION")),
