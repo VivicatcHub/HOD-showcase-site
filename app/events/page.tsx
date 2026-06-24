@@ -1,4 +1,11 @@
+import type { Metadata } from "next";
 import { EventsClient } from "@/components/EventsClient";
+
+export const metadata: Metadata = {
+  title: "Événements",
+  description:
+    "Retrouvez toutes les dates à venir des soirées et tournois organisés par Heaven of Dice.",
+};
 
 export default function EventsPage() {
   return (

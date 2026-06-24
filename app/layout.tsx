@@ -1,11 +1,33 @@
 import type { Metadata } from "next";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
+import { SITE_URL } from "@/lib/config";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Heaven of Dice",
-  description: "Association étudiante de jeux de société",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Heaven of Dice",
+    template: "%s | Heaven of Dice",
+  },
+  description:
+    "Heaven of Dice est l'association étudiante de jeux de société qui organise soirées découvertes, tournois et rencontres conviviales sur le campus.",
+  openGraph: {
+    title: "Heaven of Dice",
+    description:
+      "L'association étudiante où stratégie, convivialité et fun se rencontrent.",
+    url: SITE_URL,
+    siteName: "Heaven of Dice",
+    locale: "fr_FR",
+    type: "website",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  verification: {
+    google: "7Ay30b06BlAqiUugRSHbKelxi9Rylf-hq9TzRKuwQwY",
+  },
 };
 
 export default function RootLayout({

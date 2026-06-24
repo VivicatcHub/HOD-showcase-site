@@ -1,3 +1,5 @@
+export const SITE_URL = "https://vivicatchub.github.io/HOD-showcase-site";
+
 export const HOD_CONFIG = {
   sheetId: "1y3zDYIZ5gihhiTcooscsQuXqsN9qNJGNYLva7NJ_KvU",
   gamesSheetName: "2026",

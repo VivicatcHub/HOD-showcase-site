@@ -1,5 +1,12 @@
+import type { Metadata } from "next";
 import { ArticleCard } from "@/components/ArticleCard";
 import { getAllArticles } from "@/lib/articles";
+
+export const metadata: Metadata = {
+  title: "Comptes-rendus des C.A. et des A.G.",
+  description:
+    "Retrouvez les comptes-rendus des conseils d'administration et assemblées générales de Heaven of Dice.",
+};
 
 export default async function CAPage() {
   const articles = await getAllArticles();

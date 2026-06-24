@@ -1,37 +1,24 @@
+import Image from "next/image";
 import Link from "next/link";
-import { MemberCard } from "@/components/MemberCard";
+import { CAOrgChart } from "@/components/CAOrgChart";
 import { UpcomingEvents } from "@/components/UpcomingEvents";
-import { bureauMembers, caMembers } from "@/data/members";
 import { HOD_CONFIG } from "@/lib/config";
+import logo from "@/public/logo.png";
 
 export default function Home() {
   return (
     <div className="space-y-12 pb-12">
       <section className="hero-grain rounded-2xl border border-[#534AB7]/60 bg-[#1A1730] px-6 py-16 text-center">
         <div className="relative z-10 mx-auto max-w-3xl space-y-4">
-          <div className="mx-auto w-fit rounded-full border border-[#534AB7] bg-[#0D0B1A]/80 p-4">
-            <svg
-              width="44"
-              height="44"
-              viewBox="0 0 48 48"
-              fill="none"
-              aria-label="Logo dé"
-              role="img"
-            >
-              <rect
-                x="8"
-                y="8"
-                width="32"
-                height="32"
-                rx="8"
-                fill="#3C3489"
-                stroke="#AEA9EC"
-                strokeWidth="2"
-              />
-              <circle cx="18" cy="18" r="2.5" fill="#F3B562" />
-              <circle cx="30" cy="24" r="2.5" fill="#F3B562" />
-              <circle cx="18" cy="30" r="2.5" fill="#F3B562" />
-            </svg>
+          <div className="relative mx-auto h-48 w-48 sm:h-56 sm:w-56">
+            <div className="absolute inset-0 rounded-full bg-[#9D5CFF] opacity-30 blur-3xl" />
+            <Image
+              src={logo}
+              alt="Logo Heaven of Dice"
+              fill
+              className="object-contain drop-shadow-[0_0_25px_rgba(157,92,255,0.45)]"
+              priority
+            />
           </div>
           <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl">
             Heaven of Dice
@@ -52,26 +39,7 @@ export default function Home() {
         </p>
       </section>
 
-      <section className="grid gap-8 md:grid-cols-2">
-        <div>
-          <h2 className="mb-4 text-2xl font-bold">Bureau</h2>
-          <div className="grid gap-3">
-            {bureauMembers.map((member) => (
-              <MemberCard key={member.name} member={member} />
-            ))}
-          </div>
-        </div>
-        <div>
-          <h2 className="mb-4 text-2xl font-bold">
-            Conseil d&apos;Administration
-          </h2>
-          <div className="grid gap-3">
-            {caMembers.map((member) => (
-              <MemberCard key={member.name} member={member} />
-            ))}
-          </div>
-        </div>
-      </section>
+      <CAOrgChart />
 
       <section className="space-y-3">
         <div className="flex items-center justify-between gap-4">

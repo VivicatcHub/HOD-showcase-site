@@ -1,4 +1,11 @@
+import type { Metadata } from "next";
 import { GamesClient } from "@/components/GamesClient";
+
+export const metadata: Metadata = {
+  title: "Ludothèque",
+  description:
+    "Explorez la ludothèque de Heaven of Dice et trouvez le jeu de société idéal pour vous et vos amis.",
+};
 
 export default function LudobiblePage() {
   return (

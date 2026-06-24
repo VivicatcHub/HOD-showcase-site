@@ -1,4 +1,11 @@
+import type { Metadata } from "next";
 import { HOD_CONFIG } from "@/lib/config";
+
+export const metadata: Metadata = {
+  title: "Contact & Inscription",
+  description:
+    "Rejoignez Heaven of Dice : formulaire d'inscription, contact par email et lien vers notre serveur Discord.",
+};
 
 export default function ContactPage() {
   return (

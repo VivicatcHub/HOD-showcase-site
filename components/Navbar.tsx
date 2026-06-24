@@ -1,7 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import logoSmall from "@/public/logo-small.png";
 
 const links = [
   { href: "/", label: "Accueil" },
@@ -22,9 +24,14 @@ export function Navbar() {
           href="/"
           className="flex items-center gap-2 text-base font-bold tracking-wide text-[#F0EEF8]"
         >
-          <span aria-hidden className="text-[#F3B562]">
-            🎲
-          </span>
+          <Image
+            src={logoSmall}
+            alt=""
+            width={32}
+            height={32}
+            className="h-8 w-8 object-contain"
+            priority
+          />
           Heaven of Dice
         </Link>
         <button
