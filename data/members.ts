@@ -25,21 +25,21 @@ export const bureauLeadership: { president?: Member; chancelier?: Member } = {
 export const bureauRoles: RoleSlot[] = [
   {
     role: "Responsable Communication",
-    member: { name: "LEGRAND Yasmina", role: "Responsable de Communication" },
+    member: { name: "LEGRAND Yasmina", role: "" },
   },
   {
     role: "Trésorier",
-    member: { name: "KWIHANGANA Clément", role: "Trésorier" },
+    member: { name: "KWIHANGANA Clément", role: "" },
   },
   {
     role: "Secrétaire",
-    member: { name: "BERLET Alexis", role: "Secrétaire" },
+    member: { name: "BERLET Alexis", role: "" },
   },
 ];
 
 export const bureauSuppleant: Member | undefined = {
   name: "LAFOLIE Evan",
-  role: "Suppléant du Bureau",
+  role: "",
 };
 
 export const poles: Pole[] = [
@@ -47,28 +47,32 @@ export const poles: Pole[] = [
     name: "TCG (Trading Card Game)",
     captain: {
       name: "CORDAT-BOURSIAC Hector",
-      role: "Capitaine du Pôle TCG (Trading Card Game)",
+      role: "Capitaine",
     },
   },
   {
     name: "Jeux de Trahisons",
     captain: {
       name: "NGUYEN Charles",
-      role: "Capitaine du Pôle Jeux de Trahisons",
+      role: "Capitaine",
+    },
+    suppleant: {
+      name: "SAJOT Krys",
+      role: "Vice-Capitaine",
     },
   },
   {
     name: "Jeux de Réflexions",
     captain: {
       name: "JOUDI Omar",
-      role: "Capitaine du Pôle Jeux de Réflexions",
+      role: "Capitaine",
     },
   },
   {
     name: "Jeux de Sociétés",
     captain: {
       name: "LEROY Léonard",
-      role: "Capitaine du Pôle Jeux de Sociétés",
+      role: "Capitaine",
     },
   },
 ];
