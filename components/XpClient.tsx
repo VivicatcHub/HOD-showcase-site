@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { CreditInfoModal } from "@/components/CreditInfoModal";
 import { MemberXpCard } from "@/components/MemberXpCard";
 import { formatXP, getMembersXp } from "@/lib/xp";
 import type { MemberXp } from "@/lib/xp";
@@ -23,6 +24,7 @@ export function XpClient() {
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<Sort>("hours");
+  const [showCreditInfo, setShowCreditInfo] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -36,7 +38,8 @@ export function XpClient() {
   const totals = useMemo(() => {
     const minutes = members.reduce((sum, m) => sum + m.totalMinutes, 0);
     const events = members.reduce((sum, m) => sum + m.events.length, 0);
-    return { minutes, events };
+    const credits = members.reduce((sum, m) => sum + m.credits, 0);
+    return { minutes, events, credits };
   }, [members]);
 
   const filtered = useMemo(() => {
@@ -73,9 +76,19 @@ export function XpClient() {
   }, [members]);
 
   const stats = [
-    { label: "Membres", value: String(members.length) },
-    { label: "XP cumulées", value: formatXP(totals.minutes) },
-    { label: "Activités enregistrées", value: String(totals.events) },
+    { key: "members", label: "Membres", value: String(members.length) },
+    { key: "xp", label: "XP cumulées", value: formatXP(totals.minutes) },
+    {
+      key: "events",
+      label: "Activités enregistrées",
+      value: String(totals.events),
+    },
+    {
+      key: "credits",
+      label: "Crédits totaux",
+      value: String(totals.credits),
+      info: true,
+    },
   ];
 
   if (loading) {
@@ -129,12 +142,22 @@ export function XpClient() {
           </span>
         )}
       </div>
-      <div className="grid gap-3 sm:grid-cols-3">
+      <div className="grid gap-3 sm:grid-cols-4">
         {stats.map((stat) => (
           <div
-            key={stat.label}
-            className="rounded-xl border border-[#534AB7]/40 bg-[#1A1730] p-4 text-center"
+            key={stat.key}
+            className="relative rounded-xl border border-[#534AB7]/40 bg-[#1A1730] p-4 text-center"
           >
+            {stat.info ? (
+              <button
+                type="button"
+                onClick={() => setShowCreditInfo(true)}
+                aria-label="Comment sont calculés les crédits ?"
+                className="absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#3C3489] text-xs font-bold text-[#AEA9EC] hover:bg-[#534AB7] hover:text-[#F0EEF8]"
+              >
+                ?
+              </button>
+            ) : null}
             <p className="text-2xl font-bold text-[#F3B562]">{stat.value}</p>
             <p className="text-xs uppercase tracking-wide text-[#9E9BB8]">
               {stat.label}
@@ -142,6 +165,10 @@ export function XpClient() {
           </div>
         ))}
       </div>
+
+      {showCreditInfo ? (
+        <CreditInfoModal onClose={() => setShowCreditInfo(false)} />
+      ) : null}
 
       <div className="flex flex-wrap items-center justify-between gap-3">
         <input
