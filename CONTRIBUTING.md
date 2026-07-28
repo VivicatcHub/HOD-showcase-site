@@ -25,8 +25,6 @@ Contenu
 
 Une fois la PR fusionnée, le rapport apparaît sur le site dans les **5 minutes**.
 
-3. Écrivez le contenu en Markdown puis poussez la branche.
-
 ## Mettre à jour les événements et la ludothèque
 
 1. Ouvrez la feuille Google Sheets publique configurée dans `lib/config.ts`.
