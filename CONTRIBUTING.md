@@ -2,8 +2,11 @@
 
 ## Ajouter un article du C.A.
 
-1. Créez un fichier `.md` dans `/content/ca/` (exemple : `2026-06-08-ca.md`).
-2. Ajoutez le frontmatter suivant :
+Pour publier un nouveau rapport :
+
+1. Créer un fichier `.md` dans : `content/ca/`
+2. Nommer le fichier selon le format : `yyyy-mm-dd-nom-du-rapport.md`
+3. Ajouter le contenu en Markdown selon cet exemple:
 
 ```md
 ---
@@ -12,7 +15,15 @@ date: "2026-10-12"
 summary: "Résumé court"
 author: "Nom"
 ---
+
+# Titre
+
+Contenu
 ```
+
+4. Ouvrir une Pull Request
+
+Une fois la PR fusionnée, le rapport apparaît sur le site dans les **5 minutes**.
 
 3. Écrivez le contenu en Markdown puis poussez la branche.
 
