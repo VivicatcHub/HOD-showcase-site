@@ -206,6 +206,12 @@ Soft and friendly. Buttons, chips and badges are fully rounded pills. Cards and 
 
 - A sticky top bar: Night Ink at 95% opacity with backdrop blur and a Royal Violet bottom border. The small logo and the wordmark are on the left, and 0.875rem links on the right, which turn Lavender Mist on hover. On mobile, a bordered "Menu" toggle opens a stacked list.
 
+### Brand logo
+
+- `components/BrandLogo.tsx`: `BrandLogo` (`sm` 32px in the navbar, `lg` for feature spots) and `BrandLoader`, a pulsing logo with a label that replaces skeletons while a whole page's Sheet data loads. Skeletons stay for partial sections such as upcoming events on the home page.
+- Every icon (favicons, Apple touch icon, PWA and maskable icons, iOS launch screens) comes from `public/logo.png` via `scripts/generate-icons.py`, on a Night Ink fill.
+- The 404 page (`app/not-found.tsx`) is the one place the logo's own magenta → violet gradient appears as a colour, on the "404" digits.
+
 ### Hero
 
 - A 16px-radius Felt Plum panel with a violet border. It carries the `hero-grain` treatment: two radial glows (lavender and gold) pulsing over 8s, plus a fine dotted grain. The logo sits centred over a blurred violet halo.

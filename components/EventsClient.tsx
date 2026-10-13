@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { BrandLoader } from "@/components/BrandLogo";
 import { EventCard } from "@/components/EventCard";
 import { EventCalendar } from "@/components/EventCalendar";
 import { getAgendaEvents, getEvents } from "@/lib/events";
@@ -39,16 +40,7 @@ export function EventsClient() {
   }, [events, agendaEvents, view, filter]);
 
   if (loading) {
-    return (
-      <div className="grid gap-4">
-        {Array.from({ length: 3 }).map((_, index) => (
-          <div
-            key={index}
-            className="h-28 animate-pulse rounded-xl bg-[#1A1730]"
-          />
-        ))}
-      </div>
-    );
+    return <BrandLoader label="Chargement des événements…" />;
   }
 
   return (

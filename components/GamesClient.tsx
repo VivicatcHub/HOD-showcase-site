@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { BrandLoader } from "@/components/BrandLogo";
 import { GameRow } from "@/components/GameRow";
 import { getGames } from "@/lib/games";
 import type { GameItem } from "@/lib/games";
@@ -44,13 +45,7 @@ export function GamesClient() {
   }, [games, query, category, state]);
 
   if (loading) {
-    return (
-      <div className="grid gap-3 md:grid-cols-3">
-        {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="h-16 animate-pulse rounded-xl bg-[#1A1730]" />
-        ))}
-      </div>
-    );
+    return <BrandLoader label="Chargement de la ludothèque…" />;
   }
 
   return (

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { BrandLoader } from "@/components/BrandLogo";
 import { CreditInfoModal } from "@/components/CreditInfoModal";
 import { MemberXpCard } from "@/components/MemberXpCard";
 import { formatXP, getMembersXp } from "@/lib/xp";
@@ -92,13 +93,7 @@ export function XpClient() {
   ];
 
   if (loading) {
-    return (
-      <div className="space-y-3">
-        {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="h-20 animate-pulse rounded-xl bg-[#1A1730]" />
-        ))}
-      </div>
-    );
+    return <BrandLoader label="Chargement de l'investissement…" />;
   }
 
   const sheetSelect = HOD_CONFIG.xpSheetNames.length > 1 && (

@@ -37,7 +37,7 @@ A campus club with its own tooling: an XP/credits system that rewards time spent
 ## Brand Commitments
 
 - Name: Heaven of Dice (HOD). Always say it belongs to BDE Epitech Lyon.
-- The logo (`public/logo.png`, `public/logo-small.png`) and the purple/gold identity are fixed.
+- The logo (`public/logo.png`, from which `scripts/generate-icons.py` derives every icon) and the purple/gold identity are fixed.
 - Copy is French only, addresses the reader with informal "tu", and uses inclusive writing (e.g. "Prêt·e").
 
 ## Evidence on Hand

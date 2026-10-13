@@ -1,7 +1,8 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Lexend } from "next/font/google";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
+import { BRAND_BACKGROUND, asset, iosStartupImages } from "@/lib/brand";
 import { SITE_URL } from "@/lib/config";
 import "./globals.css";
 
@@ -28,6 +29,20 @@ export const metadata: Metadata = {
     locale: "fr_FR",
     type: "website",
   },
+  icons: {
+    icon: [
+      { url: asset("/favicon.ico"), sizes: "48x48" },
+      { url: asset("/favicon-32x32.png"), sizes: "32x32", type: "image/png" },
+      { url: asset("/favicon-16x16.png"), sizes: "16x16", type: "image/png" },
+    ],
+    apple: { url: asset("/apple-touch-icon.png"), sizes: "180x180" },
+  },
+  manifest: asset("/site.webmanifest"),
+  appleWebApp: {
+    capable: true,
+    title: "HOD",
+    startupImage: iosStartupImages,
+  },
   robots: {
     index: true,
     follow: true,
@@ -35,6 +50,10 @@ export const metadata: Metadata = {
   verification: {
     google: "7Ay30b06BlAqiUugRSHbKelxi9Rylf-hq9TzRKuwQwY",
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: BRAND_BACKGROUND,
 };
 
 export default function RootLayout({
