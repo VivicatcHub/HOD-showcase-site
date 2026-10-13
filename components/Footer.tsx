@@ -8,10 +8,7 @@ export function Footer() {
         <p>© {new Date().getFullYear()} Heaven of Dice</p>
         <div className="flex items-center gap-4">
           <Link href="/contact" className="hover:text-[#F0EEF8]">
-            Rejoindre l&apos;association
-          </Link>
-          <Link href="/statuts" className="hover:text-[#F0EEF8]">
-            Statuts
+            Rejoindre le club
           </Link>
           <a
             href={HOD_CONFIG.discordUrl}

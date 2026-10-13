@@ -25,30 +25,27 @@ export function MemberXpCard({
   };
   const barTotal = parts.event + parts.prep + parts.manage || 1;
 
-  const medal =
-    rank === 1 ? "🥇" : rank === 2 ? "🥈" : rank === 3 ? "🥉" : null;
-
   return (
     <article className="rounded-xl border border-[#534AB7]/50 bg-[#1A1730] transition hover:border-[#534AB7]">
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
-        className="flex w-full items-center gap-4 p-4 text-left"
+        className="flex w-full items-center gap-4 p-4 text-left sm:gap-5 sm:p-5"
         aria-expanded={open}
       >
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#3C3489] text-sm font-bold text-[#AEA9EC]">
-          {medal ?? rank}
+        <span
+          className={`w-10 shrink-0 text-center text-3xl font-extrabold leading-none tabular-nums ${rank <= 3 ? "text-[#AEA9EC]" : "text-[#534AB7]"}`}
+        >
+          {rank}
         </span>
         <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-baseline gap-x-2">
-            <h3 className="font-semibold text-[#F0EEF8]">
-              {member.lastName} {member.firstName}
-            </h3>
-            {member.role ? (
-              <span className="text-xs text-[#9E9BB8]">· {member.role}</span>
-            ) : null}
-          </div>
-          <div className="mt-2 flex h-2 overflow-hidden rounded-full bg-[#0D0B1A]">
+          <h3 className="truncate font-semibold text-[#F0EEF8]">
+            {member.lastName} {member.firstName}
+          </h3>
+          {member.role ? (
+            <p className="truncate text-xs text-[#9E9BB8]">{member.role}</p>
+          ) : null}
+          <div className="mt-2 flex h-1.5 overflow-hidden rounded-full bg-[#0D0B1A]">
             {categories.map((category) => {
               const value = parts[category.key];
               if (!value) return null;
@@ -66,86 +63,90 @@ export function MemberXpCard({
           </div>
         </div>
         <div className="shrink-0 text-right">
-          <p className="text-lg font-bold text-[#F3B562]">
+          <p className="text-2xl font-extrabold leading-none tabular-nums text-[#F0EEF8]">
             {formatXP(member.totalMinutes)}
           </p>
-          <p className="text-xs text-[#9E9BB8]">
+          <p className="mt-1 text-xs text-[#9E9BB8]">
             {member.credits} crédit{member.credits > 1 ? "s" : ""}
           </p>
         </div>
-        <span
-          className={`shrink-0 text-[#9E9BB8] transition ${open ? "rotate-180" : ""}`}
+        <svg
+          viewBox="0 0 16 16"
+          width="16"
+          height="16"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.75"
+          strokeLinecap="round"
+          strokeLinejoin="round"
           aria-hidden
+          className={`shrink-0 text-[#9E9BB8] transition ${open ? "rotate-180" : ""}`}
         >
-          ▾
-        </span>
+          <path d="M4 6l4 4 4-4" />
+        </svg>
       </button>
 
-      {open ? (
-        <div className="border-t border-[#534AB7]/30 px-4 pb-4 pt-3">
-          <div className="mb-3 flex flex-wrap gap-3 text-xs">
-            {categories.map((category) => (
-              <span key={category.key} className="flex items-center gap-1.5">
-                <span
-                  className="h-2.5 w-2.5 rounded-full"
-                  style={{ backgroundColor: category.color }}
-                />
-                {category.label} : {formatMinutes(parts[category.key])}
-              </span>
-            ))}
+      <div className="disclosure" data-open={open} inert={!open}>
+        <div>
+          <div className="border-t border-[#534AB7]/30 px-4 pb-5 pt-4 sm:px-5">
+            {member.events.length === 0 ? (
+              <p className="text-sm text-[#9E9BB8]">
+                Aucun détail d&apos;activité.
+              </p>
+            ) : (
+              <div className="grid gap-5 sm:grid-cols-3">
+                {categories.map((category) => {
+                  const field =
+                    category.key === "event"
+                      ? "eventMinutes"
+                      : category.key === "prep"
+                        ? "prepMinutes"
+                        : "manageMinutes";
+                  const rows = member.events.filter(
+                    (entry) => entry[field] > 0,
+                  );
+                  return (
+                    <div key={category.key}>
+                      <div
+                        className="flex items-baseline justify-between gap-2 border-b pb-2"
+                        style={{ borderColor: category.color }}
+                      >
+                        <span className="text-sm font-semibold text-[#F0EEF8]">
+                          {category.label}
+                        </span>
+                        <span className="text-sm font-bold tabular-nums text-[#F0EEF8]">
+                          {formatMinutes(parts[category.key])}
+                        </span>
+                      </div>
+                      {rows.length === 0 ? (
+                        <p className="pt-2 text-xs text-[#9E9BB8]">
+                          Rien pour l&apos;instant.
+                        </p>
+                      ) : (
+                        <ul className="pt-1 text-sm">
+                          {rows.map((entry, index) => (
+                            <li
+                              key={`${entry.name}-${index}`}
+                              className="flex justify-between gap-2 py-1 text-[#C9C6DD]"
+                            >
+                              <span className="min-w-0 truncate">
+                                {entry.name}
+                              </span>
+                              <span className="shrink-0 tabular-nums">
+                                {formatMinutes(entry[field])}
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
-
-          {member.events.length === 0 ? (
-            <p className="text-sm text-[#9E9BB8]">
-              Aucun détail d&apos;activité.
-            </p>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse text-sm">
-                <thead>
-                  <tr className="text-left text-xs uppercase tracking-wide text-[#9E9BB8]">
-                    <th className="py-1.5 pr-3 font-semibold">Activité</th>
-                    <th className="py-1.5 px-2 text-right font-semibold">
-                      Évènement
-                    </th>
-                    <th className="py-1.5 px-2 text-right font-semibold">
-                      Amont
-                    </th>
-                    <th className="py-1.5 pl-2 text-right font-semibold">
-                      Gestion
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {member.events.map((entry, index) => (
-                    <tr
-                      key={`${entry.name}-${index}`}
-                      className="border-t border-[#534AB7]/20 text-[#C9C6DD]"
-                    >
-                      <td className="py-1.5 pr-3">{entry.name}</td>
-                      <td className="py-1.5 px-2 text-right">
-                        {entry.eventMinutes
-                          ? formatMinutes(entry.eventMinutes)
-                          : "—"}
-                      </td>
-                      <td className="py-1.5 px-2 text-right">
-                        {entry.prepMinutes
-                          ? formatMinutes(entry.prepMinutes)
-                          : "—"}
-                      </td>
-                      <td className="py-1.5 pl-2 text-right">
-                        {entry.manageMinutes
-                          ? formatMinutes(entry.manageMinutes)
-                          : "—"}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
         </div>
-      ) : null}
+      </div>
     </article>
   );
 }

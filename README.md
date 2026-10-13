@@ -1,7 +1,7 @@
 # HOD Showcase Site
 
-Site officiel de l’association étudiante **Heaven of Dice (HOD)**, développé avec _Next.js, TypeScript et Tailwind CSS_.
-Ce projet sert de vitrine pour l’association, ses activités, ses rapports de C.A., et ses actualités.
+Site officiel de **Heaven of Dice (HOD)**, club étudiant rattaché au BDE Epitech Lyon, développé avec _Next.js, TypeScript et Tailwind CSS_.
+Ce projet sert de vitrine pour le club, ses activités et ses actualités.
 
 ## Aperçu
 

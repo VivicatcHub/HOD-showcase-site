@@ -7,7 +7,6 @@ export type XpEventEntry = {
   eventMinutes: number;
   /** Temps passé à l'organisation en amont. */
   prepMinutes: number;
-  /** Temps de gestion de l'asso. */
   manageMinutes: number;
 };
 

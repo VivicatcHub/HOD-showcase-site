@@ -7,7 +7,6 @@ import logoSmall from "@/public/logo-small.png";
 
 const links = [
   { href: "/", label: "Accueil" },
-  { href: "/ca", label: "C.A." },
   { href: "/events", label: "Événements" },
   { href: "/ludobible", label: "Ludothèque" },
   { href: "/xp", label: "Investissement" },
@@ -36,7 +35,7 @@ export function Navbar() {
         </Link>
         <button
           type="button"
-          className="rounded border border-[#534AB7] px-3 py-1 text-sm text-[#F0EEF8] md:hidden"
+          className="rounded border border-[#534AB7] px-3 py-1 text-sm text-[#F0EEF8] transition hover:bg-[#1A1730] md:hidden"
           onClick={() => setOpen((value) => !value)}
           aria-expanded={open}
           aria-label="Ouvrir le menu"
@@ -56,21 +55,23 @@ export function Navbar() {
           ))}
         </ul>
       </nav>
-      {open ? (
-        <ul className="space-y-2 border-t border-[#534AB7]/50 px-4 py-3 text-sm text-[#F0EEF8] md:hidden">
-          {links.map((link) => (
-            <li key={link.href}>
-              <Link
-                href={link.href}
-                onClick={() => setOpen(false)}
-                className="block rounded px-2 py-1 hover:bg-[#1A1730]"
-              >
-                {link.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      ) : null}
+      <div className="disclosure md:hidden" data-open={open} inert={!open}>
+        <div>
+          <ul className="space-y-2 border-t border-[#534AB7]/50 px-4 py-3 text-sm text-[#F0EEF8]">
+            {links.map((link) => (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  onClick={() => setOpen(false)}
+                  className="block rounded px-2 py-1 hover:bg-[#1A1730]"
+                >
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
     </header>
   );
 }

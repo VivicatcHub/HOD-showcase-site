@@ -72,14 +72,17 @@ export default function ContactPage() {
             Ouvrir dans un onglet ↗
           </a>
         </div>
-        <div className="bg-white p-2 sm:p-4">
-          <iframe
-            src={HOD_CONFIG.registrationFormUrl}
-            title="Formulaire d'inscription HOD"
-            className="h-[760px] w-full rounded-lg"
-          >
-            Chargement du formulaire…
-          </iframe>
+        <div className="bg-[#0D0B1A]/60 px-3 py-6 sm:px-8 sm:py-10">
+          <div className="mx-auto max-w-[680px] rounded-lg bg-white p-1 shadow-[0_0_40px_rgba(83,74,183,0.3)]">
+            <iframe
+              src={HOD_CONFIG.registrationFormUrl}
+              title="Formulaire d'inscription HOD"
+              loading="lazy"
+              className="h-[min(760px,80vh)] w-full rounded-md"
+            >
+              Chargement du formulaire…
+            </iframe>
+          </div>
         </div>
       </div>
     </section>
