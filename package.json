@@ -17,8 +17,7 @@
     "react-markdown": "^10.1.0",
     "remark": "^15.0.1",
     "remark-gfm": "^4.0.1",
-    "remark-html": "^16.0.1",
-    "rrule": "^2.7.1"
+    "remark-html": "^16.0.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

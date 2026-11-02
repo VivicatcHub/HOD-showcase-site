@@ -5,6 +5,7 @@ export const SITE_URL = `https://vivicatchub.github.io${BASE_PATH}`;
 export const HOD_CONFIG = {
   sheetId: "1y3zDYIZ5gihhiTcooscsQuXqsN9qNJGNYLva7NJ_KvU",
   gamesSheetName: "2026",
+  mtgDecksSheetName: "DeckMTG",
   // Member investment / XP tracking lives in a separate spreadsheet.
   xpSheetId: "1O79n_yug6bVrpj_rlqX1B7mHOvmbxO6G17QcfiO2JvQ",
   // The last entry is the current sheet, shown by default; the rest are selectable from a dropdown.

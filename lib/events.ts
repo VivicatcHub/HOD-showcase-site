@@ -1,5 +1,4 @@
 import { HOD_CONFIG } from "@/lib/config";
-import { RRule, RRuleSet } from "rrule";
 
 export type EventType = "game night" | "tournament" | "game day" | "other";
 
@@ -16,88 +15,108 @@ export type EventItem = {
 /** One occurrence of every calendar event: recurring events collapse to their
  *  next future occurrence (e.g. "every Saturday" -> the next Saturday). */
 export async function getEvents(): Promise<EventItem[]> {
-  const parsed = await loadCalendar();
-  const from = startOfToday();
+  const occurrences = await loadCalendar();
 
+  // Occurrences arrive sorted by start time, so the first one seen for a
+  // series is its next occurrence.
+  const seen = new Set<string>();
   const events: EventItem[] = [];
-  for (const event of parsed) {
-    const occurrence = nextOccurrence(event, from);
-    if (occurrence) events.push(toEventItem(event, occurrence));
+  for (const occurrence of occurrences) {
+    if (seen.has(occurrence.seriesId)) continue;
+    seen.add(occurrence.seriesId);
+    events.push(occurrence.item);
   }
-
-  return events.sort((a, b) => +new Date(a.date) - +new Date(b.date));
+  return events;
 }
 
 /** Every future occurrence, with recurring events expanded up to one year
  *  ahead (e.g. "every Saturday" -> ~52 occurrences). */
 export async function getAgendaEvents(): Promise<EventItem[]> {
-  const parsed = await loadCalendar();
+  const occurrences = await loadCalendar();
+  return occurrences.map((occurrence) => occurrence.item);
+}
+
+type Occurrence = {
+  /** Shared by every occurrence of a recurring event. */
+  seriesId: string;
+  item: EventItem;
+};
+
+type CalendarApiDate = { date?: string; dateTime?: string };
+
+type CalendarApiEvent = {
+  id: string;
+  recurringEventId?: string;
+  summary?: string;
+  location?: string;
+  description?: string;
+  start?: CalendarApiDate;
+  end?: CalendarApiDate;
+};
+
+type CalendarApiResponse = {
+  items?: CalendarApiEvent[];
+  nextPageToken?: string;
+};
+
+// Both getEvents() and getAgendaEvents() run on the same page: share one request.
+let calendarPromise: Promise<Occurrence[]> | null = null;
+
+function loadCalendar(): Promise<Occurrence[]> {
+  calendarPromise ??= fetchCalendar().catch((err) => {
+    console.log(err);
+    calendarPromise = null;
+    return [];
+  });
+  return calendarPromise;
+}
+
+/** Future occurrences (up to one year ahead) from the Google Calendar API,
+ *  which sends CORS headers and expands recurring events for us. */
+async function fetchCalendar(): Promise<Occurrence[]> {
+  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_CALENDAR_API_KEY;
+  if (!apiKey) {
+    console.warn("NEXT_PUBLIC_GOOGLE_CALENDAR_API_KEY is not set: no events loaded.");
+    return [];
+  }
+
   const from = startOfToday();
   const to = new Date(from);
   to.setFullYear(to.getFullYear() + 1);
 
-  const events: EventItem[] = [];
-  for (const event of parsed) {
-    for (const occurrence of occurrencesBetween(event, from, to)) {
-      events.push(toEventItem(event, occurrence));
-    }
-  }
+  const occurrences: Occurrence[] = [];
+  let pageToken: string | undefined;
+  do {
+    const params = new URLSearchParams({
+      key: apiKey,
+      singleEvents: "true",
+      orderBy: "startTime",
+      timeMin: from.toISOString(),
+      timeMax: to.toISOString(),
+      maxResults: "2500",
+    });
+    if (pageToken) params.set("pageToken", pageToken);
 
-  return events.sort((a, b) => +new Date(a.date) - +new Date(b.date));
-}
-
-async function loadCalendar(): Promise<ParsedEvent[]> {
-  try {
-    const icalUrl = `https://calendar.google.com/calendar/ical/${encodeURIComponent(
-      HOD_CONFIG.eventsCalendarId,
-    )}/public/basic.ics`;
-
-    // Google Calendar ICS has no CORS headers — proxy the request through corsproxy.io
     const res = await fetch(
-      `https://corsproxy.io/?${encodeURIComponent(icalUrl)}`,
+      `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(
+        HOD_CONFIG.eventsCalendarId,
+      )}/events?${params}`,
       { cache: "no-store" },
     );
-    if (!res.ok) return [];
+    if (!res.ok) throw new Error(`Google Calendar API: ${res.status} ${await res.text()}`);
 
-    const icalText = await res.text();
-    const parsed: ParsedEvent[] = [];
-
-    const lines = icalText.split(/\r?\n/);
-    const unfolded: string[] = [];
-    for (var line of lines) {
-      line = line.replaceAll("\\", "");
-      if (line.startsWith(" ") || line.startsWith("\t")) {
-        if (unfolded.length) {
-          unfolded[unfolded.length - 1] += line.slice(1);
-        }
-      } else {
-        unfolded.push(line);
+    const data: CalendarApiResponse = await res.json();
+    for (const event of data.items ?? []) {
+      const occurrence = toOccurrence(event);
+      // timeMin matches on end time; keep only events starting today or later.
+      if (occurrence && new Date(occurrence.item.start) >= from) {
+        occurrences.push(occurrence);
       }
     }
+    pageToken = data.nextPageToken;
+  } while (pageToken);
 
-    let inEvent = false;
-    let buffer: string[] = [];
-    for (const line of unfolded) {
-      if (line === "BEGIN:VEVENT") {
-        inEvent = true;
-        buffer = [];
-        continue;
-      }
-      if (line === "END:VEVENT") {
-        inEvent = false;
-        const ev = parseEventBuffer(buffer);
-        if (ev) parsed.push(ev);
-        buffer = [];
-        continue;
-      }
-      if (inEvent) buffer.push(line);
-    }
-
-    return parsed;
-  } catch (err) {
-    console.log(err);
-    return [];
-  }
+  return occurrences;
 }
 
 function startOfToday(): Date {
@@ -106,152 +125,45 @@ function startOfToday(): Date {
   return date;
 }
 
-function nextOccurrence(event: ParsedEvent, from: Date): Date | null {
-  if (event.rset) return event.rset.after(from, true);
-  return event.start >= from ? event.start : null;
-}
+function toOccurrence(event: CalendarApiEvent): Occurrence | null {
+  const start = parseApiDate(event.start);
+  if (!start) return null;
+  const end = parseApiDate(event.end);
 
-function occurrencesBetween(event: ParsedEvent, from: Date, to: Date): Date[] {
-  if (event.rset) return event.rset.between(from, to, true);
-  return event.start >= from && event.start <= to ? [event.start] : [];
-}
-
-function toEventItem(event: ParsedEvent, occurrence: Date): EventItem {
-  const end = event.durationMs
-    ? new Date(occurrence.getTime() + event.durationMs)
-    : null;
+  const title = event.summary ?? "Événement sans titre";
+  const description = htmlToText(event.description ?? "");
   return {
-    title: event.title,
-    date: occurrence.toISOString(),
-    start: occurrence.toISOString(),
-    end: end ? end.toISOString() : "",
-    location: event.location,
-    description: event.description,
-    type: normalizeEventType(event.title + " " + event.description, occurrence),
+    seriesId: event.recurringEventId ?? event.id,
+    item: {
+      title,
+      date: start.toISOString(),
+      start: start.toISOString(),
+      end: end ? end.toISOString() : "",
+      location: event.location ?? "Lieu à confirmer",
+      description,
+      type: normalizeEventType(title + " " + description, start),
+    },
   };
 }
 
-type ParsedEvent = {
-  title: string;
-  location: string;
-  description: string;
-  start: Date;
-  durationMs: number;
-  /** Recurrence set when the event repeats, otherwise null. */
-  rset: RRuleSet | null;
-};
-
-function parseEventBuffer(buf: string[]): ParsedEvent | null {
-  const map: Record<string, string> = {};
-  for (const line of buf) {
-    const idx = line.indexOf(":");
-    if (idx === -1) continue;
-    const key = line.slice(0, idx).split(";")[0];
-    const value = line.slice(idx + 1);
-    map[key] = (map[key] ? map[key] + "\n" : "") + value;
+/** Timed events carry an RFC 3339 dateTime; all-day events a local YYYY-MM-DD date. */
+function parseApiDate(value?: CalendarApiDate): Date | null {
+  if (value?.dateTime) {
+    const parsed = new Date(value.dateTime);
+    return Number.isNaN(parsed.getTime()) ? null : parsed;
   }
-
-  const title = map.SUMMARY ?? "Événement sans titre";
-  const location = map.LOCATION ?? "Lieu à confirmer";
-  const description = map.DESCRIPTION ?? "";
-
-  const dtstartDate = parseICalDate(map.DTSTART ?? "");
-  const dtendDate = parseICalDate(map.DTEND ?? "");
-  if (!dtstartDate) return null;
-
-  const durationMs = dtendDate
-    ? Math.max(0, dtendDate.getTime() - dtstartDate.getTime())
-    : 0;
-
-  let rset: RRuleSet | null = null;
-  if (map.RRULE) {
-    try {
-      rset = new RRuleSet();
-      const ruleOptions = RRule.parseString(map.RRULE);
-      ruleOptions.dtstart = dtstartDate;
-      rset.rrule(new RRule(ruleOptions));
-
-      if (map.RDATE) {
-        map.RDATE.split(/[,\n]/)
-          .map((s) => s.trim())
-          .forEach((d) => {
-            const dateObj = parseICalDate(d);
-            if (dateObj) rset!.rdate(dateObj);
-          });
-      }
-
-      if (map.EXDATE) {
-        map.EXDATE.split(/[,\n]/)
-          .map((s) => s.trim())
-          .forEach((d) => {
-            const dateObj = parseICalDate(d);
-            if (dateObj) rset!.exdate(dateObj);
-          });
-      }
-    } catch (err) {
-      rset = null;
-    }
-  }
-
-  return { title, location, description, start: dtstartDate, durationMs, rset };
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value?.date ?? "");
+  if (!m) return null;
+  const [, y, mm, d] = m;
+  return new Date(Number(y), Number(mm) - 1, Number(d));
 }
 
-function parseICalDate(value?: string): Date | null {
-  if (!value) return null;
-  const v = value.trim();
-
-  let m =
-    /^([0-9]{4})([0-9]{2})([0-9]{2})T([0-9]{2})([0-9]{2})([0-9]{2})Z$/.exec(v);
-  if (m) {
-    const [, y, mm, d, hh, min, ss] = m;
-    return new Date(
-      Date.UTC(
-        Number(y),
-        Number(mm) - 1,
-        Number(d),
-        Number(hh),
-        Number(min),
-        Number(ss),
-      ),
-    );
-  }
-
-  m = /^([0-9]{4})([0-9]{2})([0-9]{2})T([0-9]{2})([0-9]{2})Z$/.exec(v);
-  if (m) {
-    const [, y, mm, d, hh, min] = m;
-    return new Date(
-      Date.UTC(
-        Number(y),
-        Number(mm) - 1,
-        Number(d),
-        Number(hh),
-        Number(min),
-        0,
-      ),
-    );
-  }
-
-  m = /^([0-9]{4})([0-9]{2})([0-9]{2})T([0-9]{2})([0-9]{2})([0-9]{2})$/.exec(v);
-  if (m) {
-    const [, y, mm, d, hh, min, ss] = m;
-    return new Date(
-      Number(y),
-      Number(mm) - 1,
-      Number(d),
-      Number(hh),
-      Number(min),
-      Number(ss),
-    );
-  }
-
-  m = /^([0-9]{4})([0-9]{2})([0-9]{2})$/.exec(v);
-  if (m) {
-    const [, y, mm, d] = m;
-    return new Date(Number(y), Number(mm) - 1, Number(d));
-  }
-
-  const parsed = new Date(v);
-  return Number.isNaN(parsed.getTime()) ? null : parsed;
+/** The API returns descriptions as HTML (links, <br>…); the UI shows plain text. */
+function htmlToText(html: string): string {
+  if (!html) return "";
+  const withBreaks = html.replace(/<br\s*\/?>/gi, "\n").replace(/<\/p>/gi, "\n");
+  const doc = new DOMParser().parseFromString(withBreaks, "text/html");
+  return (doc.body.textContent ?? "").trim();
 }
 
 function normalizeEventType(value: string, date: Date | null): EventType {

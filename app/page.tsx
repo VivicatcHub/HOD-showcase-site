@@ -18,7 +18,7 @@ export default function Home() {
               Le club étudiant du BDE Epitech Lyon où stratégie, convivialité et
               fun se rencontrent.
             </p>
-            <div className="flex flex-wrap items-center justify-center gap-3 md:justify-start">
+            {/* <div className="flex flex-wrap items-center justify-center gap-3 md:justify-start">
               <a
                 href={HOD_CONFIG.registrationFormUrl}
                 target="_blank"
@@ -35,7 +35,7 @@ export default function Home() {
               >
                 Rejoindre Discord
               </a>
-            </div>
+            </div> */}
           </div>
           <div className="motion-die relative h-44 w-44 shrink-0 md:h-72 md:w-72">
             <div className="motion-halo absolute inset-0 rounded-full bg-[#9D5CFF] opacity-35 blur-3xl" />
@@ -81,7 +81,7 @@ export default function Home() {
         <p className="mt-2 text-[#9E9BB8]">
           Inscris-toi au club et rejoins notre communauté Discord.
         </p>
-        <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
+        {/* <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
           <a
             href={HOD_CONFIG.registrationFormUrl}
             target="_blank"
@@ -98,7 +98,7 @@ export default function Home() {
           >
             Rejoindre Discord
           </a>
-        </div>
+        </div> */}
       </section>
     </div>
   );

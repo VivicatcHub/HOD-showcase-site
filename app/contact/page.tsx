@@ -13,9 +13,8 @@ export default function ContactPage() {
       <div className="space-y-3 text-center">
         <h1 className="text-3xl font-bold">Contact &amp; Inscription</h1>
         <p className="mx-auto max-w-xl text-[#9E9BB8]">
-          Envie de nous rejoindre ou une simple question ? Remplissez le
-          formulaire ci-dessous, écrivez-nous, ou faites un tour sur notre
-          Discord.
+          Envie de nous rejoindre ou une simple question ? Faites un tour sur
+          notre Discord.
         </p>
       </div>
 
@@ -53,7 +52,7 @@ export default function ContactPage() {
         </a>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-[#534AB7]/50 bg-[#1A1730] shadow-[0_0_40px_rgba(83,74,183,0.25)]">
+      {/* <div className="overflow-hidden rounded-2xl border border-[#534AB7]/50 bg-[#1A1730] shadow-[0_0_40px_rgba(83,74,183,0.25)]">
         <div className="flex items-center justify-between gap-3 border-b border-[#534AB7]/40 px-5 py-4">
           <div className="flex items-center gap-2">
             <span aria-hidden className="text-[#F3B562]">
@@ -84,7 +83,7 @@ export default function ContactPage() {
             </iframe>
           </div>
         </div>
-      </div>
+      </div> */}
     </section>
   );
 }
